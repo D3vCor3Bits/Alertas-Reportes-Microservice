@@ -1,8 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AlertasReportesService } from './alertas-reportes.service';
 import { CreateAlertasReporteDto } from './dto/create-alertas-reporte.dto';
 import { UpdateAlertasReporteDto } from './dto/update-alertas-reporte.dto';
+import { AlertasReportesService } from './alertas-reportes.service';
 
 @Controller()
 export class AlertasReportesController {

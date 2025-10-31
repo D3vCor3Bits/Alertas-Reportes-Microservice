@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AlertasReportesService } from './alertas-reportes.service';
-import { AlertasReportesController } from './alertas-reportes.controller';
 import { NatsModule } from 'src/transports/nats.module';
+import { AlertasReportesController } from './alertas-reportes.controller';
+import { AlertasReportesService } from './alertas-reportes.service';
 
 @Module({
   controllers: [AlertasReportesController],
