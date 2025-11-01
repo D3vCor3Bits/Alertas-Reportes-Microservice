@@ -1,7 +1,11 @@
 // templates/layout/footer.ts
 export const footer = () => `
-  <footer style="text-align: center; color: #999; font-size: 12px; padding: 20px; background-color: #f9f9f9; border-top: 1px solid #e0e0e0;">
-    <p>&copy; ${new Date().getFullYear()} Douremember. Todos los derechos reservados.</p>
-    <p style="margin-top: 10px;">Este es un correo automático, por favor no responder.</p>
-  </footer>
-`;
+  <div style="background-color: #fafafa; padding: 24px 40px; border-top: 1px solid #e5e7eb;">
+    <p style="margin: 0 0 6px 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
+      Este es un mensaje automático del sistema de monitoreo clínico.
+    </p>
+    <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+      Para consultas o asistencia técnica, por favor contacte al equipo de soporte.
+    </p>
+  </div>
+`

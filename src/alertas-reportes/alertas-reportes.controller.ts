@@ -1,7 +1,7 @@
 import { Controller, Param, ParseIntPipe } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AlertasReportesService } from './alertas-reportes.service';
-import { PuntajeDto, ReporteDto } from './dto';
+import { BaselineDto, PuntajeDto, ReporteDto } from './dto';
 
 @Controller()
 export class AlertasReportesController {
@@ -15,5 +15,10 @@ export class AlertasReportesController {
   @MessagePattern({cmd:'reporteTiempo'})
   async reporte(@Payload('idPaciente', ParseIntPipe) idPaciente: number ){
     return await this.alertasReportesService.generarReporte(idPaciente);
+  }
+
+  @EventPattern({cmd:'generarAvisoBaseline'})
+  generarAvisoBaseline(@Payload() baselineDto: BaselineDto){
+    return this.alertasReportesService.avisoBaseline(baselineDto);
   }
 }

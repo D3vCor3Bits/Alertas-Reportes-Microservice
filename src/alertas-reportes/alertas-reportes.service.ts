@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NATS_SERVICE } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { PuntajeDto, ReporteDto, SesionPuntajeDto } from './dto';
+import { BaselineDto, PuntajeDto, ReporteDto, SesionPuntajeDto } from './dto';
 import { EmailService } from 'src/email/email.service';
 import { EMAIL } from 'src/email/email.types';
 import { firstValueFrom } from 'rxjs';
@@ -200,7 +200,27 @@ export class AlertasReportesService {
     return cleanedReport;
   }
   
-  async avisoPrimeraSesion(){
-    
+  async avisoBaseline(baselineDto: BaselineDto){
+    await this.emailService.sendEmail({
+        type: EMAIL.AVISO_BASELINE,
+        params: {
+          usuarioEmail: baselineDto.usuarioEmail,
+          fecha: new Date(2025, 0, 15, 15, 30),
+          nombreDoctor: baselineDto.nombreDoctor,
+          nombrePaciente: baselineDto.nombrePaciente,
+          sessionCoherencia: baselineDto.sessionCoherencia,
+          sessionComision: baselineDto.sessionComision,
+          sessionFluidez: baselineDto.sessionFluidez,
+          sessionOmision: baselineDto.sessionOmision,
+          sessionRecall: baselineDto.sessionRecall,
+          sessionTotal: baselineDto.sessionTotal,
+        },
+      });
+
+      return {
+        success: true,
+        message: 'Aviso de baseline generado realizado',
+        alertaEnviada: true,
+      };
   }
 }

@@ -5,6 +5,7 @@ import { envs } from "src/config";
 import { SendEmailParams, EMAIL } from "./email.types";
 import { alertaPuntajeBajoEmail } from "./templates/alerta-puntaje-bajo.email";
 import { RpcException } from "@nestjs/microservices";
+import { avisoBaseline } from "./templates/aviso-baseline.email";
 
 @Injectable()
 export class EmailService {
@@ -61,6 +62,11 @@ export class EmailService {
           html: alertaPuntajeBajoEmail(emailParams.params),
           subject: `Alerta: Puntaje Bajo Detectado en la descripción del paciente ${emailParams.params.nombrePaciente}`,
         };
+      case EMAIL.AVISO_BASELINE:
+        return {
+          html: avisoBaseline(emailParams.params),
+          subject: `Baseline: El paciente ${emailParams.params.nombrePaciente} ha generado su primera sesión de decripciones`
+        };
       default:
         throw new InternalServerErrorException("Tipo de email no reconocido");
     }
@@ -69,6 +75,8 @@ export class EmailService {
   private getRecipientEmail(emailParams: SendEmailParams): string {
     switch (emailParams.type) {
       case EMAIL.ALERTA_PUNTAJE_BAJO:
+        return emailParams.params.usuarioEmail;
+      case EMAIL.AVISO_BASELINE:
         return emailParams.params.usuarioEmail;
       default:
         throw new InternalServerErrorException(
