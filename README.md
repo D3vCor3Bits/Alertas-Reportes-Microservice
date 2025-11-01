@@ -23,7 +23,46 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Microservicio de Alertas y Reportes para Douremember. Este servicio se encarga de enviar notificaciones por correo electrónico cuando se detectan eventos importantes, como puntajes bajos en descripciones de imágenes.
+
+## Características
+
+- 📧 Envío de correos electrónicos usando Resend
+- ⚠️ Sistema de alertas por puntaje bajo
+- 🔌 Integración con NATS para comunicación entre microservicios
+- 📝 Templates HTML personalizables para emails
+
+## Configuración de Resend
+
+### 1. Obtener API Key de Resend
+
+1. Crea una cuenta en [Resend](https://resend.com/)
+2. Ve a la página de API Keys
+3. Crea una nueva API Key y cópiala (solo la verás una vez)
+4. Guárdala de forma segura
+
+### 2. Verificar tu Dominio
+
+1. Ve a la página de Domains en el dashboard de Resend
+2. Agrega tu dominio (ej: `tudominio.com`)
+3. Sigue las instrucciones para actualizar tus registros DNS
+4. Espera a que Resend verifique tu dominio (puede tomar minutos u horas)
+
+**Nota para desarrollo:** Si no tienes un dominio verificado, puedes usar el dominio de prueba que Resend proporciona, pero solo podrás enviar emails a tu correo registrado.
+
+### 3. Variables de Entorno
+
+Crea un archivo `.env` basado en `.env.example`:
+
+```bash
+PORT=3003
+NATS_SERVERS=nats://localhost:4222
+
+# Configuración de Resend
+RESEND_API_KEY=re_tu_api_key_aqui
+EMAIL_FROM=Douremember
+EMAIL_FROM_ADDRESS=notificaciones@tudominio.com
+```
 
 ## Project setup
 
@@ -43,6 +82,90 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## Uso del Servicio de Alertas
+
+### Mensaje NATS para Evaluar Puntaje
+
+El microservicio escucha el patrón `alertas.evaluar.puntaje` y espera un payload con la siguiente estructura:
+
+```typescript
+{
+  usuarioEmail: "usuario@ejemplo.com",
+  usuarioNombre: "Juan Pérez",
+  puntaje: 45,  // Puntaje obtenido (0-100)
+  descripcion: "Una descripción de la imagen...",
+  umbralMinimo: 60  // Si el puntaje es menor, se envía alerta
+}
+```
+
+### Ejemplo de Uso desde otro Microservicio
+
+```typescript
+// En otro microservicio con NATS
+this.client.send('alertas.evaluar.puntaje', {
+  usuarioEmail: 'usuario@ejemplo.com',
+  usuarioNombre: 'Juan Pérez',
+  puntaje: 45,
+  descripcion: 'Descripción con puntaje bajo',
+  umbralMinimo: 60
+}).subscribe();
+```
+
+### Respuesta del Servicio
+
+```json
+{
+  "success": true,
+  "message": "Alerta de puntaje bajo enviada exitosamente",
+  "alertaEnviada": true
+}
+```
+
+O si el puntaje es aceptable:
+
+```json
+{
+  "success": true,
+  "message": "Puntaje aceptable, no se requiere alerta",
+  "alertaEnviada": false
+}
+```
+
+## Estructura del Módulo de Email
+
+```
+src/email/
+├── templates/
+│   ├── layout/
+│   │   ├── header.ts          # Header HTML reutilizable
+│   │   └── footer.ts          # Footer HTML reutilizable
+│   └── alerta-puntaje-bajo.email.ts  # Template de alerta
+├── email.module.ts            # Módulo de email
+├── email.service.ts           # Servicio de envío
+└── email.types.ts             # Tipos y definiciones
+```
+
+## Agregar Nuevos Tipos de Email
+
+1. Define el nuevo tipo en `email.types.ts`:
+```typescript
+export const EMAIL = {
+  ALERTA_PUNTAJE_BAJO: "ALERTA_PUNTAJE_BAJO",
+  NUEVO_TIPO: "NUEVO_TIPO", // Agregar aquí
+} as const;
+```
+
+2. Crea el template en `templates/`:
+```typescript
+export const nuevoTipoEmail = (params) => `
+  ${header('Título')}
+  <div>Contenido...</div>
+  ${footer()}
+`;
+```
+
+3. Actualiza el servicio en `email.service.ts` para manejar el nuevo tipo.
 
 ## Run tests
 
