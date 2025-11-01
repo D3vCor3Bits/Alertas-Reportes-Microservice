@@ -1,20 +1,28 @@
 // email.service.ts
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { Resend } from "resend";
 import { envs } from "src/config";
 import { SendEmailParams, EMAIL } from "./email.types";
 import { alertaPuntajeBajoEmail } from "./templates/alerta-puntaje-bajo.email";
+import { RpcException } from "@nestjs/microservices";
 
 @Injectable()
 export class EmailService {
   private readonly resendClient: Resend;
   private readonly logger = new Logger(EmailService.name);
-
+  
   constructor() {
     this.resendClient = new Resend(envs.resendApiKey);
   }
 
-  async sendEmail(emailParams: SendEmailParams): Promise<void> {
+  /**
+   * Send email
+   * @param type
+   * @param email
+   * @param params
+   */
+
+  async sendEmail(emailParams: SendEmailParams){
     try {
       const { html, subject } = this.getEmailContent(emailParams);
       const toEmail = this.getRecipientEmail(emailParams);
@@ -37,10 +45,10 @@ export class EmailService {
 
       this.logger.log(`Email enviado exitosamente. ID: ${data?.id}`);
     } catch (error) {
-      this.logger.error(`Error inesperado al enviar email: ${error.message}`);
-      throw new InternalServerErrorException(
-        "Error al procesar el envío del email"
-      );
+      throw new RpcException({
+        status: HttpStatus.BAD_REQUEST,
+        message: "Error al procesar el envío del email"
+      });
     }
   }
 
@@ -51,7 +59,7 @@ export class EmailService {
       case EMAIL.ALERTA_PUNTAJE_BAJO:
         return {
           html: alertaPuntajeBajoEmail(emailParams.params),
-          subject: "⚠️ Alerta: Puntaje Bajo Detectado en tu Descripción",
+          subject: `Alerta: Puntaje Bajo Detectado en la descripción del paciente ${emailParams.params.nombrePaciente}`,
         };
       default:
         throw new InternalServerErrorException("Tipo de email no reconocido");

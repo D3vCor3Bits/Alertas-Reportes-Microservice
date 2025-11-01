@@ -4,10 +4,11 @@ export const EMAIL = {
 } as const;
 
 export interface AlertaPuntajeBajoParams {
-  usuarioEmail: string;
-  usuarioNombre: string;
-  puntaje: number;
-  descripcion: string;
+  usuarioEmail: string
+  nombrePaciente: string
+  nombreDoctor: string
+  puntaje: number
+  sesion: number
   fecha: string;
   umbralMinimo: number;
 }
@@ -17,5 +18,5 @@ interface AlertaPuntajeBajoTypeParams {
   params: AlertaPuntajeBajoParams;
 }
 
-// Puedes agregar más tipos de emails aquí en el futuro
-export type SendEmailParams = AlertaPuntajeBajoTypeParams;
+
+export type SendEmailParams =| AlertaPuntajeBajoTypeParams;

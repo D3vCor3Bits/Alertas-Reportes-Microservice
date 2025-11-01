@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, Max, Min } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsPositive, IsString, Max, Min } from "class-validator";
 
 export class PuntajeDto {
   @IsEmail()
@@ -7,16 +7,20 @@ export class PuntajeDto {
 
   @IsString()
   @IsNotEmpty()
-  usuarioNombre: string;
+  nombrePaciente: string;
+
+  @IsString()
+  @IsNotEmpty()
+  nombreDoctor: string;
 
   @IsNumber()
   @Min(0)
   @Max(100)
   puntaje: number;
 
-  @IsString()
-  @IsNotEmpty()
-  descripcion: string;
+  @IsNumber()
+  @IsPositive()
+  sesion: number
 
   @IsNumber()
   @Min(0)

@@ -1,16 +1,19 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateAlertasReporteDto } from './dto/create-alertas-reporte.dto';
-import { UpdateAlertasReporteDto } from './dto/update-alertas-reporte.dto';
+import { Controller, Param, ParseIntPipe } from '@nestjs/common';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AlertasReportesService } from './alertas-reportes.service';
-import { PuntajeDto } from './dto';
+import { PuntajeDto, ReporteDto } from './dto';
 
 @Controller()
 export class AlertasReportesController {
   constructor(private readonly alertasReportesService: AlertasReportesService) {}
 
-  @MessagePattern('alertas.evaluar.puntaje')
-  async evaluarPuntaje(@Payload() puntajeDto: PuntajeDto) {
+  @EventPattern({cmd:'alertasEvaluarPuntaje'})
+  evaluarPuntaje(@Payload() puntajeDto: PuntajeDto) {
     return this.alertasReportesService.generarAlertasPuntaje(puntajeDto);
+  }
+
+  @MessagePattern({cmd:'reporteTiempo'})
+  async reporte(@Payload('idPaciente', ParseIntPipe) idPaciente: number ){
+    return await this.alertasReportesService.generarReporte(idPaciente);
   }
 }
