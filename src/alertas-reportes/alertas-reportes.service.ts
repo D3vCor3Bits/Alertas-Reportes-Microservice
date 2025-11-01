@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NATS_SERVICE } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { BaselineDto, PuntajeDto, ReporteDto, SesionPuntajeDto } from './dto';
+import { BaselineDto, PuntajeDto, SesionPuntajeDto} from './dto';
 import { EmailService } from 'src/email/email.service';
 import { EMAIL } from 'src/email/email.types';
 import { firstValueFrom } from 'rxjs';
@@ -47,21 +47,21 @@ export class AlertasReportesService {
     };
   }
 
-  async generarReporte(idPaciente: number){
+  async generarReporte(idPaciente: string){
     try {
       console.log("ENTREEEE")
       
-      const sesiones : [] = await firstValueFrom(
-        this.client.send({cmd:'listarSesionesCompletas'}, {idPaciente})
+      const sesiones : SesionPuntajeDto[] = await firstValueFrom(
+        this.client.send({cmd:'listarSesionesCompletadas'}, {idPaciente})
       );
-      const report = this.buildTimeSeriesReport(sesiones as any[], idPaciente);
+      const report = this.buildTimeSeriesReport(sesiones as SesionPuntajeDto[], idPaciente);
       return report;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  private buildTimeSeriesReport(sesiones: any[], patientId?: number) {
+  private buildTimeSeriesReport(sesiones: SesionPuntajeDto[], patientId?: string) {
     if (!Array.isArray(sesiones)) return null;
 
     // ordenar por fecha ascendente
@@ -164,9 +164,7 @@ export class AlertasReportesService {
 
     // Construir versión limpia y compacta para frontend
     const sessionsMinimal = sessions.map(s => ({
-      idSesion: s.idSesion,
       fechaInicio: s.fechaInicio,
-      estado: s.estado,
       sessionTotal: s.sessionTotal ?? null,
       sessionRecall: s.sessionRecall ?? null,
       sessionCoherencia: s.sessionCoherencia ?? null,

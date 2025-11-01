@@ -1,6 +1,10 @@
-import { IsNumber, IsPositive } from "class-validator"
+import { IsDate, IsNumber, IsPositive } from "class-validator"
 
 export class SesionPuntajeDto{
+
+    @IsDate()
+    fechaInicio: Date
+
     @IsNumber()
     @IsPositive()
     sessionRecall: number
