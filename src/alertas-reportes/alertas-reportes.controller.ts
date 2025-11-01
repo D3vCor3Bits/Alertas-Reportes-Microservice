@@ -1,35 +1,24 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateAlertasReporteDto } from './dto/create-alertas-reporte.dto';
-import { UpdateAlertasReporteDto } from './dto/update-alertas-reporte.dto';
+import { Controller, Param, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AlertasReportesService } from './alertas-reportes.service';
+import { BaselineDto, PuntajeDto } from './dto';
 
 @Controller()
 export class AlertasReportesController {
   constructor(private readonly alertasReportesService: AlertasReportesService) {}
 
-  @MessagePattern('createAlertasReporte')
-  create(@Payload() createAlertasReporteDto: CreateAlertasReporteDto) {
-    return this.alertasReportesService.create(createAlertasReporteDto);
+  @EventPattern({cmd:'alertasEvaluarPuntaje'})
+  evaluarPuntaje(@Payload() puntajeDto: PuntajeDto) {
+    return this.alertasReportesService.generarAlertasPuntaje(puntajeDto);
   }
 
-  @MessagePattern('findAllAlertasReportes')
-  findAll() {
-    return this.alertasReportesService.findAll();
+  @MessagePattern({cmd:'reporteTiempo'})
+  async reporte(@Payload('idPaciente', ParseUUIDPipe) idPaciente: string ){
+    return await this.alertasReportesService.generarReporte(idPaciente);
   }
 
-  @MessagePattern('findOneAlertasReporte')
-  findOne(@Payload() id: number) {
-    return this.alertasReportesService.findOne(id);
-  }
-
-  @MessagePattern('updateAlertasReporte')
-  update(@Payload() updateAlertasReporteDto: UpdateAlertasReporteDto) {
-    return this.alertasReportesService.update(updateAlertasReporteDto.id, updateAlertasReporteDto);
-  }
-
-  @MessagePattern('removeAlertasReporte')
-  remove(@Payload() id: number) {
-    return this.alertasReportesService.remove(id);
+  @EventPattern({cmd:'generarAvisoBaseline'})
+  generarAvisoBaseline(@Payload() baselineDto: BaselineDto){
+    return this.alertasReportesService.avisoBaseline(baselineDto);
   }
 }

@@ -24,6 +24,6 @@ async function bootstrap() {
   );
 
   await app.listen();
-  logger.log(`Microservicio de descripciones e imagenes corriendo en PORT ${envs.port}`)
+  logger.log(`Microservicio de alertas y reportes corriendo en PORT ${envs.port}`)
 }
 bootstrap();
