@@ -1,7 +1,8 @@
 import { Controller, Param, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AlertasReportesService } from './alertas-reportes.service';
-import { BaselineDto, PuntajeDto } from './dto';
+import { BaselineDto, PuntajeDto  } from './dto';
+import { InvitacionUsuarioDto } from './dto/invitacionUsuario.dto';
 
 @Controller()
 export class AlertasReportesController {
@@ -20,5 +21,10 @@ export class AlertasReportesController {
   @EventPattern({cmd:'generarAvisoBaseline'})
   generarAvisoBaseline(@Payload() baselineDto: BaselineDto){
     return this.alertasReportesService.avisoBaseline(baselineDto);
+  }
+
+  @EventPattern({cmd : 'enviarInvitacion'})
+  crearInvitacionusuario(@Payload() invitacionUsuario : InvitacionUsuarioDto ){
+    return this.alertasReportesService.crearInvitacionusuario(invitacionUsuario)
   }
 }

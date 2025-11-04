@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NATS_SERVICE } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { BaselineDto, PuntajeDto, SesionPuntajeDto} from './dto';
+import { BaselineDto, PuntajeDto, SesionPuntajeDto } from './dto';
 import { EmailService } from 'src/email/email.service';
 import { EMAIL } from 'src/email/email.types';
 import { firstValueFrom } from 'rxjs';
+import { InvitacionUsuarioDto } from './dto/invitacionUsuario.dto';
 
 @Injectable()
 export class AlertasReportesService {
@@ -12,7 +13,7 @@ export class AlertasReportesService {
   constructor(
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
     private readonly emailService: EmailService
-  ) {}
+  ) { }
 
   async generarAlertasPuntaje(puntajeDto: PuntajeDto) {
     // Si el puntaje es menor al umbral, enviar alerta
@@ -47,12 +48,12 @@ export class AlertasReportesService {
     };
   }
 
-  async generarReporte(idPaciente: string){
+  async generarReporte(idPaciente: string) {
     try {
       console.log("ENTREEEE")
-      
-      const sesiones : SesionPuntajeDto[] = await firstValueFrom(
-        this.client.send({cmd:'listarSesionesCompletadas'}, {idPaciente})
+
+      const sesiones: SesionPuntajeDto[] = await firstValueFrom(
+        this.client.send({ cmd: 'listarSesionesCompletadas' }, { idPaciente })
       );
       const report = this.buildTimeSeriesReport(sesiones as SesionPuntajeDto[], idPaciente);
       return report;
@@ -197,28 +198,64 @@ export class AlertasReportesService {
 
     return cleanedReport;
   }
-  
-  async avisoBaseline(baselineDto: BaselineDto){
-    await this.emailService.sendEmail({
-        type: EMAIL.AVISO_BASELINE,
-        params: {
-          usuarioEmail: baselineDto.usuarioEmail,
-          fecha: new Date(2025, 0, 15, 15, 30),
-          nombreDoctor: baselineDto.nombreDoctor,
-          nombrePaciente: baselineDto.nombrePaciente,
-          sessionCoherencia: baselineDto.sessionCoherencia,
-          sessionComision: baselineDto.sessionComision,
-          sessionFluidez: baselineDto.sessionFluidez,
-          sessionOmision: baselineDto.sessionOmision,
-          sessionRecall: baselineDto.sessionRecall,
-          sessionTotal: baselineDto.sessionTotal,
-        },
-      });
 
-      return {
-        success: true,
-        message: 'Aviso de baseline generado realizado',
-        alertaEnviada: true,
-      };
+  async avisoBaseline(baselineDto: BaselineDto) {
+    await this.emailService.sendEmail({
+      type: EMAIL.AVISO_BASELINE,
+      params: {
+        usuarioEmail: baselineDto.usuarioEmail,
+        fecha: new Date(2025, 0, 15, 15, 30),
+        nombreDoctor: baselineDto.nombreDoctor,
+        nombrePaciente: baselineDto.nombrePaciente,
+        sessionCoherencia: baselineDto.sessionCoherencia,
+        sessionComision: baselineDto.sessionComision,
+        sessionFluidez: baselineDto.sessionFluidez,
+        sessionOmision: baselineDto.sessionOmision,
+        sessionRecall: baselineDto.sessionRecall,
+        sessionTotal: baselineDto.sessionTotal,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Aviso de baseline generado realizado',
+      alertaEnviada: true,
+    };
   }
+  async crearInvitacionusuario(invitacionUsuario: InvitacionUsuarioDto) {
+    /**
+     * Esta función se ejecuta al recibir el evento 'invitacion_creada'
+     * desde otro microservicio. 
+     * 
+     * Su propósito es enviar al usuario invitado un correo con el enlace 
+     * de registro correspondiente según su rol (cuidador o paciente).
+     * 
+     * La plantilla de correo utilizada es `EMAIL.INVITACION_USUARIO`.
+     */
+
+    const { correo, nombreCompleto, token, rol } = invitacionUsuario;
+
+    // Determina el tipo de usuario a partir del rol
+    // La plantilla usará este valor para construir la URL final
+    const type = rol.toUpperCase(); // "CUIDADOR" o "PACIENTE"
+
+    // Envía el correo usando el servicio de envío de correos
+    await this.emailService.sendEmail({
+      type: EMAIL.INVITACION_USUARIO,
+      params: {
+        usuarioEmail: correo,
+        type,
+        token,
+      },
+    });
+
+    return {
+      success: true,
+      message: `Correo de invitación enviado correctamente a ${nombreCompleto}`,
+      correo,
+      rol,
+    };
+
+  }
+
 }

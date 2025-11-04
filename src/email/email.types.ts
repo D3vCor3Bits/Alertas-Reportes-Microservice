@@ -1,7 +1,8 @@
 // email.types.ts
 export const EMAIL = {
   ALERTA_PUNTAJE_BAJO: "ALERTA_PUNTAJE_BAJO",
-  AVISO_BASELINE: "AVISO_BASELINE"
+  AVISO_BASELINE: "AVISO_BASELINE",
+  INVITACION_USUARIO: "INVITACION_USUARIO",
 } as const;
 
 export interface AlertaPuntajeBajoParams {
@@ -20,7 +21,7 @@ interface AlertaPuntajeBajoTypeParams {
 }
 
 
-export interface BaselineAvisoParams{
+export interface BaselineAvisoParams {
   usuarioEmail: string
   fecha: Date
   nombrePaciente: string
@@ -33,9 +34,27 @@ export interface BaselineAvisoParams{
   sessionTotal: number
 }
 
-interface BaselineAvisoTypeParams{
+interface BaselineAvisoTypeParams {
   type: typeof EMAIL.AVISO_BASELINE,
   params: BaselineAvisoParams
 }
 
-export type SendEmailParams =| AlertaPuntajeBajoTypeParams | BaselineAvisoTypeParams;
+
+
+export interface InvitacionUsuarioParams {
+  usuarioEmail: string,
+  type: string,
+  token: string
+
+}
+
+interface InvitacionUsuarioTypeParams {
+  type: typeof EMAIL.INVITACION_USUARIO
+  params: InvitacionUsuarioParams
+}
+
+
+export type SendEmailParams =
+  | AlertaPuntajeBajoTypeParams
+  | BaselineAvisoTypeParams
+  | InvitacionUsuarioTypeParams;
