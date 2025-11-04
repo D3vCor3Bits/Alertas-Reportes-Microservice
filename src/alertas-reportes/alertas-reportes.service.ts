@@ -18,7 +18,6 @@ export class AlertasReportesService {
   async generarAlertasPuntaje(puntajeDto: PuntajeDto) {
     // Si el puntaje es menor al umbral, enviar alerta
     if (puntajeDto.puntaje < puntajeDto.umbralMinimo) {
-
       await this.emailService.sendEmail({
         type: EMAIL.ALERTA_PUNTAJE_BAJO,
         params: {
@@ -204,7 +203,7 @@ export class AlertasReportesService {
       type: EMAIL.AVISO_BASELINE,
       params: {
         usuarioEmail: baselineDto.usuarioEmail,
-        fecha: new Date(2025, 0, 15, 15, 30),
+        fecha: new Date(),
         nombreDoctor: baselineDto.nombreDoctor,
         nombrePaciente: baselineDto.nombrePaciente,
         sessionCoherencia: baselineDto.sessionCoherencia,
