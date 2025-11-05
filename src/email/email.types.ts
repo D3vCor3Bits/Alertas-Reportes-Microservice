@@ -43,7 +43,7 @@ interface BaselineAvisoTypeParams {
 
 export interface InvitacionUsuarioParams {
   usuarioEmail: string,
-  type: string,
+  rol: string,
   token: string
 
 }
