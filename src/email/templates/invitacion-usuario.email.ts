@@ -1,14 +1,11 @@
-import { header } from "./layout/header";
-import { footer } from "./layout/footer";
-import { InvitacionUsuarioParams } from "../email.types";
+import { header } from './layout/header';
+import { footer } from './layout/footer';
+import { InvitacionUsuarioParams } from '../email.types';
 
 export const invitacionUsuario = (params: InvitacionUsuarioParams) => {
-  const isCuidador = params.type.toUpperCase() === "CUIDADOR";
-
-  // URL base según el tipo de invitación
-  const baseUrl = isCuidador
-    ? "https://devcorebits.com/registro-cuidador"
-    : "https://devcorebits.com/registro-paciente";
+  const rol = params.rol.toLowerCase();
+  const nombreCompleto  = params.nombreCompleto;
+  const baseUrl = 'https://devcorebits.com/registro';
 
   const link = `${baseUrl}?token=${params.token}`;
 
@@ -22,16 +19,16 @@ export const invitacionUsuario = (params: InvitacionUsuarioParams) => {
   </head>
   <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #ffffff;">
 
-    ${header("Invitación para acceder a la plataforma")}
+    ${header('Invitación para acceder a la plataforma')}
 
     <div style="padding: 32px 40px;">
 
       <p style="font-size: 15px; color: #1f2937; margin: 0 0 10px 0; line-height: 1.5;">
-        Hola,
+        Hola, ${nombreCompleto}
       </p>
 
       <p style="font-size: 14px; color: #4b5563; margin: 0 0 24px 0; line-height: 1.6;">
-        Has sido invitado a unirte a nuestra plataforma como <strong>${isCuidador ? "cuidador(a)" : "paciente"}</strong>.
+        Has sido invitado a unirte a nuestra plataforma como <strong>${rol}</strong>.
         Por favor, completa tu registro haciendo clic en el siguiente botón:
       </p>
 

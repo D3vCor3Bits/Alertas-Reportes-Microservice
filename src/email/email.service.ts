@@ -6,6 +6,7 @@ import { SendEmailParams, EMAIL } from "./email.types";
 import { alertaPuntajeBajoEmail } from "./templates/alerta-puntaje-bajo.email";
 import { RpcException } from "@nestjs/microservices";
 import { avisoBaseline } from "./templates/aviso-baseline.email";
+import { invitacionUsuario } from "./templates/invitacion-usuario.email";
 
 @Injectable()
 export class EmailService {
@@ -48,7 +49,7 @@ export class EmailService {
     } catch (error) {
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
-        message: "Error al procesar el envío del email"
+        message: "Error al procesar el envío del email",
       });
     }
   }
@@ -67,6 +68,11 @@ export class EmailService {
           html: avisoBaseline(emailParams.params),
           subject: `Baseline: El paciente ${emailParams.params.nombrePaciente} ha generado su primera sesión de decripciones`
         };
+      case EMAIL.INVITACION_USUARIO:
+        return {
+          html: invitacionUsuario(emailParams.params),
+          subject: `Invitación para unirse a la plataforma como ${emailParams.params.rol}`
+        }; 
       default:
         throw new InternalServerErrorException("Tipo de email no reconocido");
     }
@@ -77,6 +83,8 @@ export class EmailService {
       case EMAIL.ALERTA_PUNTAJE_BAJO:
         return emailParams.params.usuarioEmail;
       case EMAIL.AVISO_BASELINE:
+        return emailParams.params.usuarioEmail;
+      case EMAIL.INVITACION_USUARIO:
         return emailParams.params.usuarioEmail;
       default:
         throw new InternalServerErrorException(

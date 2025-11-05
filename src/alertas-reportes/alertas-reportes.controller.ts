@@ -23,8 +23,8 @@ export class AlertasReportesController {
     return this.alertasReportesService.avisoBaseline(baselineDto);
   }
 
-  @EventPattern({cmd : 'enviarInvitacion'})
+  @EventPattern({cmd:'crearInvitacionUsuario'})
   crearInvitacionusuario(@Payload() invitacionUsuario : InvitacionUsuarioDto ){
-    return this.alertasReportesService.crearInvitacionusuario(invitacionUsuario)
+    return this.alertasReportesService.crearInvitacionUsuario(invitacionUsuario)
   }
 }
