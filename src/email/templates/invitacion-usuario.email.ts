@@ -3,7 +3,8 @@ import { footer } from './layout/footer';
 import { InvitacionUsuarioParams } from '../email.types';
 
 export const invitacionUsuario = (params: InvitacionUsuarioParams) => {
-const rol = params.rol.toLowerCase();
+  const rol = params.rol.toLowerCase();
+  const nombreCompleto  = params.nombreCompleto;
   const baseUrl = 'https://devcorebits.com/registro';
 
   const link = `${baseUrl}?token=${params.token}`;
@@ -23,7 +24,7 @@ const rol = params.rol.toLowerCase();
     <div style="padding: 32px 40px;">
 
       <p style="font-size: 15px; color: #1f2937; margin: 0 0 10px 0; line-height: 1.5;">
-        Hola,
+        Hola, ${nombreCompleto}
       </p>
 
       <p style="font-size: 14px; color: #4b5563; margin: 0 0 24px 0; line-height: 1.6;">

@@ -260,6 +260,7 @@ export class AlertasReportesService {
         type: EMAIL.INVITACION_USUARIO,
         params: {
           usuarioEmail: invitacionUsuario.email,
+          nombreCompleto,
           rol,
           token,
         },
