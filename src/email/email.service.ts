@@ -7,6 +7,9 @@ import { alertaPuntajeBajoEmail } from "./templates/alerta-puntaje-bajo.email";
 import { RpcException } from "@nestjs/microservices";
 import { avisoBaseline } from "./templates/aviso-baseline.email";
 import { invitacionUsuario } from "./templates/invitacion-usuario.email";
+import { activacionSesion } from "./templates/activacion-sesion.email";
+import { desactivacionSesion } from "./templates/desactivacion-sesion.email";
+import { recordatorio } from "./templates/recordatorio-sesion.email";
 
 @Injectable()
 export class EmailService {
@@ -73,6 +76,21 @@ export class EmailService {
           html: invitacionUsuario(emailParams.params),
           subject: `Invitación para unirse a la plataforma como ${emailParams.params.rol}`
         }; 
+      case EMAIL.ACTIVACION_SESION:
+        return {
+          html: activacionSesion(emailParams.params),
+          subject: 'Activación de sesión de descripción para usted'
+        };
+      case EMAIL.DESACTIVACION_SESION:
+        return{
+          html: desactivacionSesion(emailParams.params),
+          subject: 'Desactivación de sesión de descripción'
+        }
+      case EMAIL.RECORDATORIO_SESIONES_ACTIVAS:
+        return{
+          html: recordatorio(emailParams.params),
+          subject: "Recordatorio de sesión en curso"
+        }
       default:
         throw new InternalServerErrorException("Tipo de email no reconocido");
     }
@@ -85,6 +103,12 @@ export class EmailService {
       case EMAIL.AVISO_BASELINE:
         return emailParams.params.usuarioEmail;
       case EMAIL.INVITACION_USUARIO:
+        return emailParams.params.usuarioEmail;
+      case EMAIL.ACTIVACION_SESION:
+        return emailParams.params.usuarioEmail;
+      case EMAIL.DESACTIVACION_SESION:
+        return emailParams.params.usuarioEmail;
+      case EMAIL.RECORDATORIO_SESIONES_ACTIVAS:
         return emailParams.params.usuarioEmail;
       default:
         throw new InternalServerErrorException(

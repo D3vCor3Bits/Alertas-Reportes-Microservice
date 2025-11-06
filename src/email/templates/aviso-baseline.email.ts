@@ -5,7 +5,8 @@ import { BaselineAvisoParams } from "../email.types";
 export const avisoBaseline = (params: BaselineAvisoParams) => {
   const toPercent = (value: number) => Math.round(value * 100)
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("es-ES", {
+    return date.toLocaleDateString("es-CO", {
+      timeZone: 'America/Bogota',
       weekday: "long",
       year: "numeric",
       month: "long",

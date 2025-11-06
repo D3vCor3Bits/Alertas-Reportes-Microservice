@@ -1,7 +1,7 @@
-import { Controller, Param, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, ParseUUIDPipe, Post, Logger } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AlertasReportesService } from './alertas-reportes.service';
-import { BaselineDto, PuntajeDto  } from './dto';
+import { ActivacionSesionDto, BaselineDto, DesactivacionSesionDto, PuntajeDto  } from './dto';
 import { InvitacionUsuarioDto } from './dto/invitacionUsuario.dto';
 
 @Controller()
@@ -26,5 +26,15 @@ export class AlertasReportesController {
   @EventPattern({cmd:'crearInvitacionUsuario'})
   crearInvitacionusuario(@Payload() invitacionUsuario : InvitacionUsuarioDto ){
     return this.alertasReportesService.crearInvitacionUsuario(invitacionUsuario)
+  }
+
+  @EventPattern({cmd:'enviarActivacion'})
+  avisoSesionActivada(@Payload() avisoSesionActivaDto: ActivacionSesionDto){
+    return this.alertasReportesService.activacionSesion(avisoSesionActivaDto);
+  }
+
+  @EventPattern({cmd: 'enviarDesactivacion'})
+  avisoDesactivacion(@Payload() avisoDesactivacion: DesactivacionSesionDto){
+    return this.alertasReportesService.desactivacionSesion(avisoDesactivacion)
   }
 }
