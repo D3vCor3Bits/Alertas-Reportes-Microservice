@@ -3,6 +3,9 @@ export const EMAIL = {
   ALERTA_PUNTAJE_BAJO: "ALERTA_PUNTAJE_BAJO",
   AVISO_BASELINE: "AVISO_BASELINE",
   INVITACION_USUARIO: "INVITACION_USUARIO",
+  ACTIVACION_SESION: "ACTIVACION_SESION",
+  DESACTIVACION_SESION: "DESACTIVACION_SESION",
+  RECORDATORIO_SESIONES_ACTIVAS: "RECORDATORIO_SESIONES_ACTIVAS"
 } as const;
 
 export interface AlertaPuntajeBajoParams {
@@ -54,8 +57,49 @@ interface InvitacionUsuarioTypeParams {
   params: InvitacionUsuarioParams
 }
 
+export interface ActivacionSesionParams{
+  usuarioEmail: string,
+  nombreCompleto: string,
+  sessionNumber?: number,
+  fecha?: string | Date,
+}
+
+interface ActivacionSesionTypeParams{
+  type: typeof EMAIL.ACTIVACION_SESION
+  params: ActivacionSesionParams
+}
+
+
+export interface DesactivacionSesionParams{
+  usuarioEmail: string,
+  nombreCompleto: string,
+  sessionNumber?: number,
+  fecha?: string | Date,
+}
+
+interface DesactivacionSesionTypeParams{
+  type: typeof EMAIL.DESACTIVACION_SESION
+  params: DesactivacionSesionParams
+}
+
+export interface RecordatorioSesionesParams {
+  usuarioEmail: string;
+  nombreUsuario: string;
+  sesionesActivas: number;
+  horasInactivo: number;
+  ultimoLogin?: string;
+}
+
+interface RecordatorioSesionesTypeParams {
+  type: typeof EMAIL.RECORDATORIO_SESIONES_ACTIVAS;
+  params: RecordatorioSesionesParams;
+}
+
 
 export type SendEmailParams =
   | AlertaPuntajeBajoTypeParams
   | BaselineAvisoTypeParams
-  | InvitacionUsuarioTypeParams;
+  | InvitacionUsuarioTypeParams
+  | ActivacionSesionTypeParams
+  | DesactivacionSesionTypeParams
+  | RecordatorioSesionesTypeParams;
