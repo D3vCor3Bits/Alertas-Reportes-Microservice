@@ -80,7 +80,7 @@
       "^src/(.*)$": "<rootDir>/src/$1"
     },
     "setupFiles": [
-      "<rootDir>/test/setup.ts"
+      "<rootDir>/test/setupTest.ts"
     ]
   }
 }
