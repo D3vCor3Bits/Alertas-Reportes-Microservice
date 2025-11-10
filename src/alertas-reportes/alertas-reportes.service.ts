@@ -405,8 +405,6 @@ export class AlertasReportesService {
         message: `Correo enviado a ${email}`,
       };
     } catch (error) {
-      console.error('Error al enviar correo de invitación:', error);
-
       throw new RpcException({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Error al procesar el envío del email',

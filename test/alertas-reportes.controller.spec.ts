@@ -44,7 +44,7 @@ describe('AlertasReportesController', () => {
   /*-------------------------------------------------------------------------*/
 
   describe('evaluarPuntaje', () => {
-    it('debe llamar a generarAlertasPuntaje del servicio', async () => {
+    it('debe llamar a generarAlertasPuntaje del servicio y retornar resultado', async () => {
       // Arrange
       const puntajeDto = {
         usuarioEmail: 'usuario@ejemplo.com',
@@ -55,16 +55,23 @@ describe('AlertasReportesController', () => {
         umbralMinimo: 5.0,
       };
 
+      const mockResponse = {
+        success: true,
+        message: 'Alerta de puntaje bajo enviada exitosamente',
+        alertaEnviada: true,
+      };
+
       mockAlertasReportesService.generarAlertasPuntaje.mockResolvedValue(
-        undefined,
+        mockResponse,
       );
 
       // Act
-      await controller.evaluarPuntaje(puntajeDto);
+      const resultado = await controller.evaluarPuntaje(puntajeDto);
 
       // Assert
       expect(service.generarAlertasPuntaje).toHaveBeenCalledWith(puntajeDto);
       expect(service.generarAlertasPuntaje).toHaveBeenCalledTimes(1);
+      expect(resultado).toEqual(mockResponse);
     });
 
     it('debe manejar errores del servicio', async () => {
@@ -116,7 +123,7 @@ describe('AlertasReportesController', () => {
   });
 
   describe('generarAvisoBaseline', () => {
-    it('debe llamar a avisoBaseline del servicio', async () => {
+    it('debe llamar a avisoBaseline del servicio y retornar resultado', async () => {
       // Arrange
       const baselineDto = {
         usuarioEmail: 'doctor@example.com',
@@ -130,18 +137,25 @@ describe('AlertasReportesController', () => {
         sessionTotal: 0.75,
       };
 
-      mockAlertasReportesService.avisoBaseline.mockResolvedValue(undefined);
+      const mockResponse = {
+        success: true,
+        message: 'Aviso de baseline generado realizado',
+        alertaEnviada: true,
+      };
+
+      mockAlertasReportesService.avisoBaseline.mockResolvedValue(mockResponse);
 
       // Act
-      await controller.generarAvisoBaseline(baselineDto);
+      const resultado = await controller.generarAvisoBaseline(baselineDto);
 
       // Assert
       expect(service.avisoBaseline).toHaveBeenCalledWith(baselineDto);
+      expect(resultado).toEqual(mockResponse);
     });
   });
 
   describe('crearInvitacionusuario', () => {
-    it('debe llamar a crearInvitacionUsuario del servicio', async () => {
+    it('debe llamar a crearInvitacionUsuario del servicio y retornar resultado', async () => {
       // Arrange
       const invitacionDto = {
         email: 'nuevo@example.com',
@@ -150,22 +164,28 @@ describe('AlertasReportesController', () => {
         token: 'token-abc123',
       };
 
+      const mockResponse = {
+        success: true,
+        message: `Correo enviado a ${invitacionDto.email}`,
+      };
+
       mockAlertasReportesService.crearInvitacionUsuario.mockResolvedValue(
-        undefined,
+        mockResponse,
       );
 
       // Act
-      await controller.crearInvitacionusuario(invitacionDto);
+      const resultado = await controller.crearInvitacionusuario(invitacionDto);
 
       // Assert
       expect(service.crearInvitacionUsuario).toHaveBeenCalledWith(
         invitacionDto,
       );
+      expect(resultado).toEqual(mockResponse);
     });
   });
 
   describe('avisoSesionActivada', () => {
-    it('debe llamar a activacionSesion del servicio', async () => {
+    it('debe llamar a activacionSesion del servicio y retornar resultado', async () => {
       // Arrange
       const activacionDto = {
         usuarioEmail: 'paciente@example.com',
@@ -173,18 +193,25 @@ describe('AlertasReportesController', () => {
         sessionNumber: 1,
       };
 
-      mockAlertasReportesService.activacionSesion.mockResolvedValue(undefined);
+      const mockResponse = {
+        success: true,
+        message: 'Aviso de sesión activada realizado',
+        alertaEnviada: true,
+      };
+
+      mockAlertasReportesService.activacionSesion.mockResolvedValue(mockResponse);
 
       // Act
-      await controller.avisoSesionActivada(activacionDto);
+      const resultado = await controller.avisoSesionActivada(activacionDto);
 
       // Assert
       expect(service.activacionSesion).toHaveBeenCalledWith(activacionDto);
+      expect(resultado).toEqual(mockResponse);
     });
   });
 
   describe('avisoDesactivacion', () => {
-    it('debe llamar a desactivacionSesion del servicio', async () => {
+    it('debe llamar a desactivacionSesion del servicio y retornar resultado', async () => {
       // Arrange
       const desactivacionDto = {
         usuarioEmail: 'paciente@example.com',
@@ -192,17 +219,24 @@ describe('AlertasReportesController', () => {
         sessionNumber: 1,
       };
 
+      const mockResponse = {
+        success: true,
+        message: 'Aviso de sesión desactivada realizado',
+        alertaEnviada: true,
+      };
+
       mockAlertasReportesService.desactivacionSesion.mockResolvedValue(
-        undefined,
+        mockResponse,
       );
 
       // Act
-      await controller.avisoDesactivacion(desactivacionDto);
+      const resultado = await controller.avisoDesactivacion(desactivacionDto);
 
       // Assert
       expect(service.desactivacionSesion).toHaveBeenCalledWith(
         desactivacionDto,
       );
+      expect(resultado).toEqual(mockResponse);
     });
   });
 });
