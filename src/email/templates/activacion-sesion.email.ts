@@ -99,12 +99,6 @@ const formatDate = (date: string | Date) => {
         Le invitamos a completar esta sesión a su conveniencia. Cada ejercicio está diseñado para ser accesible y contribuir significativamente a su proceso de mejoramiento.
       </p>
 
-      <div style="text-align: center; margin: 0 0 28px 0;">
-        <a href="#" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-size: 15px; font-weight: 600; letter-spacing: 0.3px;">
-          Iniciar Sesión de Descripciones
-        </a>
-      </div>
-
       <div style="border-left: 3px solid #7c3aed; padding: 14px 18px; margin: 0 0 24px 0; background-color: #fafafa;">
         <p style="margin: 0; font-size: 13px; color: #374151; line-height: 1.5;">
           <strong>Nota:</strong> Esta sesión estará disponible para su realización. Si tiene alguna pregunta o necesita asistencia, no dude en contactarnos.

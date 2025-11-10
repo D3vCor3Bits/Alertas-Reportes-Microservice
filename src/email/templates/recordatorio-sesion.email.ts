@@ -75,12 +75,6 @@ export const recordatorio = (params: RecordatorioSesionesParams) => {
           </ul>
         </div>
 
-        <div style="text-align: center; margin: 0 0 28px 0;">
-          <a href="#" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-size: 15px; font-weight: 600; letter-spacing: 0.3px;">
-            Continuar con mi Sesión
-          </a>
-        </div>
-
         <div style="border-left: 3px solid #7c3aed; padding: 14px 18px; margin: 0 0 24px 0; background-color: #fafafa;">
           <p style="margin: 0; font-size: 13px; color: #374151; line-height: 1.5;">
             <strong>Recuerda:</strong> Puedes completar ${params.sesionesActivas === 1 ? "tu sesión" : "tus sesiones"} a tu propio ritmo. Si tienes alguna dificultad o pregunta, nuestro equipo está disponible para ayudarte.
