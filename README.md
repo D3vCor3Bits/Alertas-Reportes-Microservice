@@ -64,6 +64,20 @@ EMAIL_FROM=Douremember
 EMAIL_FROM_ADDRESS=notificaciones@tudominio.com
 ```
 
+## Requisitos Previos
+
+### Servidor NATS
+
+Es **importante** tener un servidor NATS corriendo en Docker:
+
+```bash
+docker run -d --name nats-main -p 4222:4222 -p 8222:8222 nats
+```
+
+Este comando levanta un contenedor NATS que expone:
+- Puerto `4222`: Para conexiones de clientes
+- Puerto `8222`: Para monitoreo HTTP
+
 ## Project setup
 
 ```bash
@@ -78,144 +92,30 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Uso del Servicio de Alertas
-
-### Mensaje NATS para Evaluar Puntaje
-
-El microservicio escucha el patrón `alertas.evaluar.puntaje` y espera un payload con la siguiente estructura:
-
-```typescript
-{
-  usuarioEmail: "usuario@ejemplo.com",
-  usuarioNombre: "Juan Pérez",
-  puntaje: 45,  // Puntaje obtenido (0-100)
-  descripcion: "Una descripción de la imagen...",
-  umbralMinimo: 60  // Si el puntaje es menor, se envía alerta
-}
-```
-
-### Ejemplo de Uso desde otro Microservicio
-
-```typescript
-// En otro microservicio con NATS
-this.client.send('alertas.evaluar.puntaje', {
-  usuarioEmail: 'usuario@ejemplo.com',
-  usuarioNombre: 'Juan Pérez',
-  puntaje: 45,
-  descripcion: 'Descripción con puntaje bajo',
-  umbralMinimo: 60
-}).subscribe();
-```
-
-### Respuesta del Servicio
-
-```json
-{
-  "success": true,
-  "message": "Alerta de puntaje bajo enviada exitosamente",
-  "alertaEnviada": true
-}
-```
-
-O si el puntaje es aceptable:
-
-```json
-{
-  "success": true,
-  "message": "Puntaje aceptable, no se requiere alerta",
-  "alertaEnviada": false
-}
-```
-
-## Estructura del Módulo de Email
+## Estructura del Proyecto
 
 ```
-src/email/
-├── templates/
-│   ├── layout/
-│   │   ├── header.ts          # Header HTML reutilizable
-│   │   └── footer.ts          # Footer HTML reutilizable
-│   └── alerta-puntaje-bajo.email.ts  # Template de alerta
-├── email.module.ts            # Módulo de email
-├── email.service.ts           # Servicio de envío
-└── email.types.ts             # Tipos y definiciones
+src/
+├── alertas-reportes/
+│   ├── dto/                    # Data Transfer Objects
+│   ├── alertas-reportes.controller.ts
+│   └── alertas-reportes.service.ts
+├── email/
+│   ├── templates/
+│   │   ├── layout/
+│   │   │   ├── header.ts       # Header HTML reutilizable
+│   │   │   └── footer.ts       # Footer HTML reutilizable
+│   │   ├── alerta-puntaje-bajo.email.ts
+│   │   ├── aviso-baseline.email.ts
+│   │   ├── activacion-sesion.email.ts
+│   │   └── desactivacion-sesion.email.ts
+│   ├── email.module.ts         # Módulo de email
+│   ├── email.service.ts        # Servicio de envío
+│   └── email.types.ts          # Tipos y definiciones
+├── config/
+│   └── envs.ts                 # Configuración de variables de entorno
+└── transports/
+    └── nats.module.ts          # Configuración de NATS
 ```
-
-## Agregar Nuevos Tipos de Email
-
-1. Define el nuevo tipo en `email.types.ts`:
-```typescript
-export const EMAIL = {
-  ALERTA_PUNTAJE_BAJO: "ALERTA_PUNTAJE_BAJO",
-  NUEVO_TIPO: "NUEVO_TIPO", // Agregar aquí
-} as const;
-```
-
-2. Crea el template en `templates/`:
-```typescript
-export const nuevoTipoEmail = (params) => `
-  ${header('Título')}
-  <div>Contenido...</div>
-  ${footer()}
-`;
-```
-
-3. Actualiza el servicio en `email.service.ts` para manejar el nuevo tipo.
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
