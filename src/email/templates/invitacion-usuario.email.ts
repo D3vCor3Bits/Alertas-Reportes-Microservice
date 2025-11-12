@@ -5,7 +5,7 @@ import { InvitacionUsuarioParams } from '../email.types';
 export const invitacionUsuario = (params: InvitacionUsuarioParams) => {
   const rol = params.rol.toLowerCase();
   const nombreCompleto  = params.nombreCompleto;
-  const baseUrl = 'https://devcorebits.com/registro';
+  const baseUrl = 'http://localhost:3005/registro';
 
   const link = `${baseUrl}?token=${params.token}`;
 
